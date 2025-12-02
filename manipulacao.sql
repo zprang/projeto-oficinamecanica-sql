@@ -1,18 +1,15 @@
 USE oficina_lp4x4;
 
--- Atualizar status da ordem 2
-UPDATE ORDEM_SERVICO
-SET Status = 'Finalizada'
-WHERE ID_OS = 2;
+-- Atualizar status
+UPDATE ORDEM_SERVICO SET Status = 'Finalizada', Data_Saida = '2025-11-15' WHERE ID_OS = 2;
 
--- Atualizar preço da peça
-UPDATE PECA_ESTOQUE
-SET Preco_Unitario = 55.00
-WHERE ID_PECA = 1;
+-- Teste: excluir cliente (agora funciona!)
+DELETE FROM CLIENTE WHERE ID_CLIENTE = 3;  -- Exclui cliente, veículo e OS em cascata
 
--- Deletar cliente teste
-INSERT INTO CLIENTE (Nome, Telefone, Email) VALUES ('Teste', '(00) 00000-0000', 'teste@teste.com');
-DELETE FROM CLIENTE WHERE Nome = 'Teste';
+-- Teste: cadastrar novo cliente com procedure
+CALL CadastrarClienteComVeiculo('Lucas Pereira', '(47) 99123-4567', 'lucas@email.com',
+                               'NEW-2025', 'Chevrolet S10', 35000);
 
--- Cancelar ordem 2
-DELETE FROM ORDEM_SERVICO WHERE ID_OS = 2;
+-- Teste: buscar cliente
+CALL BuscarCliente('Lucas');
+CALL BuscarCliente('S10');
