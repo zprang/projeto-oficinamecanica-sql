@@ -32,12 +32,15 @@ O modelo lógico final consiste em 7 tabelas principais, todas normalizadas:
 
 Este repositório contém os scripts SQL e a documentação completa do projeto:
 
-* **`/documentacao`**: Pasta contendo os PDFs das Atividades 1, 2 e 3 (o processo de concepção).
-* **`README.md`**: Este arquivo, com a documentação do projeto.
-* **`schema.sql`**: (DDL - Data Definition Language) Script que **cria** a estrutura do banco (`CREATE DATABASE`, `CREATE TABLE`) e define todas as chaves primárias (PK) e estrangeiras (FK).
-* **`intert.sql`**: (DML - Data Manipulation Language) Script que **popula** o banco de dados, inserindo os dados de exemplo (clientes, veículos, ordens, peças).
-* **`consultas.sql`**: (DQL - Data Query Language) Contém 5 consultas `SELECT` complexas para análise de dados, utilizando `JOIN`, `GROUP BY`, `ORDER BY` e funções de agregação como `AVG()` e `SUM()`.
-* **`manipulacao.sql`**: (DML) Contém os comandos `UPDATE` e `DELETE` para demonstrar a manipulação e a integridade dos dados (como `ON DELETE CASCADE`).
+* **`/documentacao`**: Pasta contendo os PDFs das Atividades 1, 2 e 3.  
+* **`README.md`**: Este arquivo, com a documentação completa do projeto.  
+* **`schema.sql`**: (DDL - Data Definition Language) Script que **cria** o banco de dados `oficina_lp4x4`, todas as tabelas, chaves primárias (PK), chaves estrangeiras (FK), restrições e triggers para cálculo automático do valor total.  
+* **`insert.sql`**: (DML - Data Manipulation Language) Script que **popula** o banco de dados com dados de exemplo (clientes, veículos, mecânicos, ordens de serviço, serviços e peças).  
+* **`procedures.sql`**: (Stored Procedures) Script que **cria** as stored procedures funcionais do sistema:  
+  - `CadastrarClienteComVeiculo`: cadastra um novo cliente e seu veículo em uma única operação  
+  - `BuscarCliente`: busca avançada de cliente por nome, telefone ou placa do veículo  
+* **`consultas.sql`**: (DQL - Data Query Language) Contém **5 consultas complexas** com `JOIN`, `GROUP BY`, `ORDER BY`, `AVG()`, `SUM()` e `COALESCE` para análise de dados da oficina.  
+* **`manipulacao.sql`**: (DML) Contém comandos `UPDATE`, `DELETE` e chamadas às procedures para demonstrar a manipulação de dados e a integridade referencial com `ON DELETE CASCADE`.
 
 ## 4. Como Executar
 
@@ -45,20 +48,24 @@ O projeto foi desenvolvido e testado utilizando **MySQL Workbench**.
 
 É crucial que os scripts sejam executados na ordem correta para que as Chaves Estrangeiras (FKs) funcionem.
 
-1. Execute o **`schema.sql`** primeiro. Isso irá criar o banco `oficina_lp4x4` e todas as tabelas vazias.
-2. Execute o **`intert.sql`** em seguida. Isso irá popular as tabelas com os dados de exemplo.
-3. Execute o **`consultas.sql`** para testar as consultas de leitura e ver os resultados.
-4. Execute o **`manipulacao.sql`** por último, para testar as regras de atualização e exclusão.
+Vá em File → Run SQL Script… e execute na seguinte ordem:
+→ schema.sql
+→ insert.sql
+→ procedures.sql
+→ consultas.sql
+→ manipulacao.sql
 
 ## 5. Prova de Execução (MySQL Workbench)
 
 Esta seção contém os prints que comprovam a criação e execução bem-sucedida de todos os scripts no MySQL Workbench.
+<img width="1708" height="845" alt="image" src="https://github.com/user-attachments/assets/55d9dd4e-dec8-4e49-ae07-f4c6e89be6ab" />
 
 ---
 
 ### 5.1. Criação da Estrutura (Action Output)
 
 O print abaixo mostra o log de execução (`Action Output`) do script `schema.sql`, indicando que o banco de dados (`oficina_lp4x4`) e todas as tabelas foram criadas com sucesso.
+<img width="1701" height="375" alt="image" src="https://github.com/user-attachments/assets/8aa8b31e-e791-44e6-be55-ccd039e8f94f" />
 
 
 ---
@@ -67,6 +74,7 @@ O print abaixo mostra o log de execução (`Action Output`) do script `schema.sq
 
 O print a seguir mostra o log de execução (`Action Output`) do script `intert.sql`, comprovando a inserção dos dados de teste e a atualização do `Valor_Total` nas ordens de serviço 1 e 2.
 
+<img width="1697" height="178" alt="image" src="https://github.com/user-attachments/assets/a82e642f-0096-4289-b611-56a6a1f523fc" />
 
 ---
 
@@ -76,22 +84,24 @@ Os prints a seguir mostram os resultados (`Result Grid`) das consultas de análi
 
 **Resultado da Consulta 3 (Detalhes da Ordem de Serviço 1 com `JOIN`):**
 *(Este print mostra a junção de 5 tabelas para exibir um serviço específico: OS, Cliente, Veículo, Mecânico e Serviço)*
-
+<img width="653" height="175" alt="image" src="https://github.com/user-attachments/assets/f1ee8a7c-c112-4a7e-87a3-73e13f8ae519" />
 
 **Resultado da Consulta 4 (Ranking de Clientes por Total de Ordens com `COUNT` e `GROUP BY`):**
 *(Este print mostra o agrupamento de Ordens de Serviço por cliente)*
+<img width="538" height="141" alt="image" src="https://github.com/user-attachments/assets/a025b0d0-6b2a-4cb3-96c7-578cd1ecf78e" />
 
-<img width="1100" height="389" alt="Imagem Consulta 4" src="" />
 
 **Resultado da Consulta 5 (Peças mais Utilizadas com `SUM`):**
 *(Este print mostra o ranking das peças mais usadas em Ordens de Serviço)*
 
-<img width="1100" height="389" alt="Imagem Consulta5" src="" />
+<img width="418" height="222" alt="image" src="https://github.com/user-attachments/assets/2973bf84-1753-4589-9c11-a0833fce36d8" />
+
 
 ---
 
 ### 5.4. Execução da Manipulação (Action Output)
 
-Este print mostra o log de execução do script `manipulacao.sql`, comprovando que os comandos `UPDATE` e `DELETE` (que incluíram a atualização de status, preço e a exclusão da OS 2) foram executados com sucesso (Linhas 24-32).
+Este print mostra o log de execução do script `manipulacao.sql`, comprovando que os comandos `UPDATE` e `DELETE` (que incluíram a atualização de status, preço e a exclusão da OS 2) foram executados com sucesso (Linhas 31-32).
+<img width="1694" height="139" alt="image" src="https://github.com/user-attachments/assets/8af7a054-ba2e-4751-9f50-643de29e51a9" />
 
-<img width="1100" height="389" alt="Imagem Log execução" src="" />
+
